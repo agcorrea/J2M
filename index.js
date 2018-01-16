@@ -118,7 +118,12 @@ J2M.prototype.to_jira = function(str) {
             return code + '}' + content + '{code}';
         })
         // Inline-Preformatted Text
-        .replace(/`([^`]+)`/g, '{{$1}}')
+        .replace(/`([^`]+)`/g, function (match, content) {
+            var specialChars = ['{', '}'];
+            var regex = new RegExp('('+ specialChars.join('|') + ')', 'g');
+
+            return '{{' + content.replace(regex, '\\$1') + '}}';
+        })
         // Named Link
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '[$1|$2]')
         // Un-Named Link
